@@ -10,6 +10,13 @@ This directory contains hands-on exercises to help you master UNIX/Linux command
 
 ---
 
+## 🇮🇩 Materi Bahasa Indonesia
+
+- **[Latihan Praktis (Indonesian)](latihan-id.md)** - Latihan dalam Bahasa Indonesia
+- **[Kisi-Kisi Materi](kisi-kisi.md)** - Daftar perintah penting untuk ujian
+
+---
+
 ## 📁 Exercise Categories
 
 ### 🟢 [Beginner Exercises](beginner/)
