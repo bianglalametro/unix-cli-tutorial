@@ -200,9 +200,9 @@ print_stats() {
     
     local text
     if $IGNORE_CASE; then
-        text=$(cat "$input" | tr '[:upper:]' '[:lower:]' | tr -cs '[:alpha:]' '\n' | grep -E ".{${MIN_LENGTH},}" 2>/dev/null)
+        text=$(tr '[:upper:]' '[:lower:]' < "$input" | tr -cs '[:alpha:]' '\n' | grep -E ".{${MIN_LENGTH},}" 2>/dev/null)
     else
-        text=$(cat "$input" | tr -cs '[:alpha:]' '\n' | grep -E ".{${MIN_LENGTH},}" 2>/dev/null)
+        text=$(tr -cs '[:alpha:]' '\n' < "$input" | grep -E ".{${MIN_LENGTH},}" 2>/dev/null)
     fi
     
     total_words=$(echo "$text" | wc -l)

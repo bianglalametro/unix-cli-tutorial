@@ -148,7 +148,7 @@ get_disk_usage() {
 # Get load average
 #######################################
 get_load_average() {
-    cat /proc/loadavg | awk '{print $1, $2, $3}'
+    awk '{print $1, $2, $3}' /proc/loadavg
 }
 
 #######################################
