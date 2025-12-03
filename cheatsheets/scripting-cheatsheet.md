@@ -679,6 +679,342 @@ for f in *.txt; do process "$f" & done; wait
 
 ---
 
+## 📁 File Operations
+
+### Reading Files
+
+```bash
+# Read entire file into variable
+content=$(<file.txt)
+
+# Read file line by line
+while IFS= read -r line; do
+    echo "$line"
+done < file.txt
+
+# Read with line number
+while IFS= read -r line; do
+    ((n++))
+    echo "$n: $line"
+done < file.txt
+
+# Read fields from CSV
+while IFS=',' read -r col1 col2 col3; do
+    echo "Column 1: $col1"
+done < file.csv
+
+# Read into array
+mapfile -t arr < file.txt
+readarray -t arr < file.txt
+```
+
+### Writing Files
+
+```bash
+# Write to file
+echo "content" > file.txt
+
+# Append to file
+echo "content" >> file.txt
+
+# Here document
+cat > file.txt << EOF
+Line 1
+Line 2
+Line 3
+EOF
+
+# Here document with variable expansion disabled
+cat > file.txt << 'EOF'
+$variable is not expanded
+EOF
+
+# Here string
+cat <<< "Single line"
+```
+
+---
+
+## 🔀 Process Substitution
+
+```bash
+# Compare two command outputs
+diff <(ls dir1) <(ls dir2)
+
+# Process command output
+while read -r line; do
+    echo "$line"
+done < <(find . -name "*.txt")
+
+# Write to multiple files
+echo "content" | tee >(cmd1) >(cmd2) > /dev/null
+```
+
+---
+
+## 🧪 Debugging
+
+```bash
+# Debug entire script
+bash -x script.sh
+
+# Debug section of script
+set -x
+# commands to debug
+set +x
+
+# Print variable values
+echo "DEBUG: var=$var" >&2
+
+# Use PS4 for better trace output
+export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
+# Check syntax without running
+bash -n script.sh
+
+# Verbose mode
+set -v
+
+# Trace function calls
+#!/bin/bash
+set -euo pipefail
+trap 'echo "Error on line $LINENO"' ERR
+```
+
+---
+
+## 📦 Subshells and Command Groups
+
+```bash
+# Subshell (separate environment)
+(cd /tmp && ls)
+echo $PWD  # Still in original directory
+
+# Command group (same environment)
+{ cd /tmp; ls; }
+echo $PWD  # Now in /tmp
+
+# Capture subshell output
+result=$(command)
+
+# Background subshell
+(long_running_command) &
+```
+
+---
+
+## 🌐 Network Operations
+
+```bash
+# Download file
+curl -O http://example.com/file.txt
+wget http://example.com/file.txt
+
+# Send HTTP request
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"key":"value"}' http://api.example.com
+
+# Check port availability
+nc -zv hostname 80
+
+# Simple HTTP server
+python3 -m http.server 8080
+
+# Get external IP
+curl ifconfig.me
+curl icanhazip.com
+```
+
+---
+
+## 🎮 Interactive Menus
+
+```bash
+# Select menu
+PS3="Choose an option: "
+options=("Option 1" "Option 2" "Quit")
+select opt in "${options[@]}"; do
+    case $opt in
+        "Option 1") echo "Selected 1" ;;
+        "Option 2") echo "Selected 2" ;;
+        "Quit") break ;;
+        *) echo "Invalid option" ;;
+    esac
+done
+
+# Yes/No prompt
+read -p "Continue? [y/N] " answer
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+    echo "Continuing..."
+fi
+```
+
+---
+
+## 📊 Data Processing
+
+```bash
+# JSON parsing (with jq)
+curl -s api.example.com | jq '.data.name'
+
+# CSV processing
+awk -F',' '{print $1, $3}' file.csv
+
+# XML processing (with xmllint)
+xmllint --xpath "//element" file.xml
+
+# Calculate statistics
+awk '{sum+=$1; sq+=$1*$1} END {
+    print "Mean:", sum/NR
+    print "StdDev:", sqrt(sq/NR - (sum/NR)^2)
+}' numbers.txt
+
+# Frequency count
+sort file.txt | uniq -c | sort -rn
+
+# Top N items
+sort file.txt | uniq -c | sort -rn | head -10
+```
+
+---
+
+## 🔐 Security
+
+```bash
+# Generate random password
+openssl rand -base64 32 | tr -d '/+=' | cut -c1-16
+
+# Generate random string
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 16
+
+# Hash file
+sha256sum file.txt
+md5sum file.txt
+
+# Encrypt file
+openssl enc -aes-256-cbc -salt -in file.txt -out file.enc
+
+# Decrypt file
+openssl enc -aes-256-cbc -d -in file.enc -out file.txt
+
+# Check if running as root
+if [[ $EUID -ne 0 ]]; then
+    echo "Must run as root"
+    exit 1
+fi
+```
+
+---
+
+## 📋 Complete Script Template
+
+```bash
+#!/usr/bin/env bash
+#
+# Script: script_name.sh
+# Description: Brief description
+# Author: Your Name
+# Date: YYYY-MM-DD
+# Version: 1.0
+#
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# Constants
+readonly SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Default values
+verbose=false
+output_file=""
+
+# Usage function
+usage() {
+    cat << EOF
+Usage: $SCRIPT_NAME [OPTIONS] <arguments>
+
+Description of what this script does.
+
+OPTIONS:
+    -h, --help      Show this help message
+    -v, --verbose   Enable verbose output
+    -o, --output    Output file (default: stdout)
+
+EXAMPLES:
+    $SCRIPT_NAME input.txt
+    $SCRIPT_NAME -v -o result.txt input.txt
+
+EOF
+}
+
+# Logging functions
+log() { echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*"; }
+info() { log "INFO: $*"; }
+warn() { log "WARN: $*" >&2; }
+error() { log "ERROR: $*" >&2; }
+die() { error "$*"; exit 1; }
+
+# Cleanup function
+cleanup() {
+    # Cleanup code here
+    [[ -f "$temp_file" ]] && rm -f "$temp_file"
+}
+trap cleanup EXIT
+
+# Parse arguments
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            -v|--verbose)
+                verbose=true
+                shift
+                ;;
+            -o|--output)
+                output_file="$2"
+                shift 2
+                ;;
+            --)
+                shift
+                break
+                ;;
+            -*)
+                die "Unknown option: $1"
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    
+    # Remaining arguments
+    args=("$@")
+}
+
+# Main function
+main() {
+    parse_args "$@"
+    
+    # Validate arguments
+    [[ ${#args[@]} -eq 0 ]] && die "No arguments provided"
+    
+    # Your logic here
+    for arg in "${args[@]}"; do
+        $verbose && info "Processing: $arg"
+        # Process each argument
+    done
+}
+
+# Run main
+main "$@"
+```
+
+---
+
 **📖 Related Resources:**
 - [Essential Commands Cheatsheet](essential-commands.md)
 - [Shell Scripting Module](../06-shell-scripting/)

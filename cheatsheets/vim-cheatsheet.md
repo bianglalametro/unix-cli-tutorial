@@ -512,6 +512,186 @@ gq}
 
 " Count occurrences
 :%s/pattern//gn
+
+" Delete all blank lines
+:g/^$/d
+
+" Delete lines matching pattern
+:g/pattern/d
+
+" Delete lines NOT matching pattern
+:v/pattern/d
+
+" Run command on all lines matching pattern
+:g/pattern/normal @q
+
+" Reverse all lines
+:g/^/m0
+
+" Number all lines
+:%!nl
+
+" Convert tabs to spaces
+:retab
+
+" Remove trailing whitespace
+:%s/\s\+$//e
+
+" Join all lines into one
+:%j
+
+" Split line at cursor
+i<Enter><Esc>
+
+" Duplicate current line
+yyp
+
+" Duplicate and comment
+yypkI// <Esc>j
+
+" Swap two characters
+xp
+
+" Swap two lines
+ddp
+
+" Swap two words
+dawwP
+
+" Change word under cursor globally
+* cw <new_word> <Esc> n.n.n.
+
+" Record and replay complex edit
+qa ... q  (record)
+@a        (replay)
+@@        (repeat)
+
+" Increment/decrement number
+Ctrl+a    (increment)
+Ctrl+x    (decrement)
+
+" Insert sequence of numbers
+:put =range(1,10)
+```
+
+---
+
+## 🔌 Plugins (Popular)
+
+### Plugin Managers
+
+```vim
+" vim-plug (recommended)
+" Install: curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"   https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+" In .vimrc:
+call plug#begin('~/.vim/plugged')
+Plug 'tpope/vim-sensible'
+Plug 'preservim/nerdtree'
+Plug 'junegunn/fzf.vim'
+call plug#end()
+
+" Commands: :PlugInstall, :PlugUpdate, :PlugClean
+```
+
+### Essential Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| `vim-sensible` | Sensible defaults |
+| `NERDTree` | File explorer |
+| `fzf.vim` | Fuzzy finder |
+| `vim-airline` | Status bar |
+| `vim-gitgutter` | Git diff markers |
+| `vim-surround` | Surround text objects |
+| `vim-commentary` | Easy commenting |
+| `coc.nvim` | Autocomplete |
+
+---
+
+## 🎨 Color Schemes
+
+```vim
+" Set colorscheme
+:colorscheme desert
+
+" Popular schemes
+:colorscheme molokai
+:colorscheme solarized
+:colorscheme gruvbox
+:colorscheme dracula
+:colorscheme nord
+
+" View available schemes
+:colorscheme <Tab>
+```
+
+---
+
+## ⚡ Advanced Features
+
+### Multiple Files
+
+```vim
+" Open multiple files
+vim file1.txt file2.txt file3.txt
+
+" Navigate between files
+:n          " Next file
+:N          " Previous file
+:args       " List files
+
+" Add file to argument list
+:argadd file.txt
+
+" Edit all .txt files
+:args *.txt
+```
+
+### Diff Mode
+
+```vim
+" Open vim diff
+vimdiff file1.txt file2.txt
+
+" In vim:
+:diffthis   " Add buffer to diff
+:diffoff    " Remove from diff
+
+" Navigate differences
+]c          " Next change
+[c          " Previous change
+do          " Obtain (get change from other)
+dp          " Put (push change to other)
+```
+
+### Session Management
+
+```vim
+" Save session
+:mksession! session.vim
+
+" Load session
+vim -S session.vim
+:source session.vim
+```
+
+### Encryption
+
+```vim
+" Encrypt file
+:X
+(enter password twice)
+:w
+
+" Open encrypted file
+vim encrypted.txt
+(enter password)
+
+" Remove encryption
+:set key=
+:w
 ```
 
 ---

@@ -265,6 +265,121 @@
 
 ---
 
+## 🖥️ System Administration
+
+### User Management
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `whoami` | Current username | `whoami` |
+| `who` | Logged in users | `who` |
+| `w` | User activity | `w` |
+| `id` | User and group IDs | `id username` |
+| `groups` | Show groups | `groups username` |
+| `useradd` | Add user | `sudo useradd john` |
+| `userdel` | Delete user | `sudo userdel john` |
+| `passwd` | Change password | `passwd` |
+| `su` | Switch user | `su - username` |
+| `sudo` | Run as superuser | `sudo command` |
+
+### Disk Usage
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `df -h` | Disk space usage | `df -h` |
+| `du -sh` | Directory size | `du -sh /var/*` |
+| `du -ah` | All files with size | `du -ah | sort -rh | head` |
+| `lsblk` | Block devices | `lsblk` |
+| `fdisk -l` | Partition info | `sudo fdisk -l` |
+| `mount` | Mount filesystem | `mount /dev/sdb1 /mnt` |
+| `umount` | Unmount filesystem | `umount /mnt` |
+
+### Package Management (Debian/Ubuntu)
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `apt update` | Update package list | `sudo apt update` |
+| `apt upgrade` | Upgrade packages | `sudo apt upgrade` |
+| `apt install` | Install package | `sudo apt install vim` |
+| `apt remove` | Remove package | `sudo apt remove vim` |
+| `apt search` | Search packages | `apt search nginx` |
+| `dpkg -l` | List installed | `dpkg -l | grep vim` |
+
+### Package Management (Red Hat/CentOS)
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `yum update` | Update packages | `sudo yum update` |
+| `yum install` | Install package | `sudo yum install vim` |
+| `yum remove` | Remove package | `sudo yum remove vim` |
+| `yum search` | Search packages | `yum search nginx` |
+| `rpm -qa` | List installed | `rpm -qa | grep vim` |
+
+---
+
+## 📊 Monitoring and Performance
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `top` | Real-time processes | `top` |
+| `htop` | Interactive top | `htop` |
+| `vmstat` | Virtual memory stats | `vmstat 1 5` |
+| `iostat` | I/O statistics | `iostat -x 1` |
+| `sar` | System activity | `sar -u 1 5` |
+| `uptime` | System uptime/load | `uptime` |
+| `dmesg` | Kernel messages | `dmesg | tail` |
+| `journalctl` | System logs | `journalctl -xe` |
+
+---
+
+## 🔧 System Services (systemd)
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `systemctl start` | Start service | `sudo systemctl start nginx` |
+| `systemctl stop` | Stop service | `sudo systemctl stop nginx` |
+| `systemctl restart` | Restart service | `sudo systemctl restart nginx` |
+| `systemctl status` | Service status | `systemctl status nginx` |
+| `systemctl enable` | Enable at boot | `sudo systemctl enable nginx` |
+| `systemctl disable` | Disable at boot | `sudo systemctl disable nginx` |
+| `systemctl list-units` | List active units | `systemctl list-units --type=service` |
+
+---
+
+## 📜 Useful Aliases
+
+```bash
+# Navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ~='cd ~'
+
+# Listing
+alias ll='ls -la'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls -ltr'
+
+# Safety
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Shortcuts
+alias h='history'
+alias c='clear'
+alias x='exit'
+alias g='grep'
+
+# System
+alias update='sudo apt update && sudo apt upgrade'
+alias ports='netstat -tulanp'
+alias meminfo='free -m -l -t'
+alias diskinfo='df -h'
+```
+
+---
+
 ## 💡 Quick Tips
 
 ```bash
@@ -286,7 +401,133 @@ tail -f /var/log/syslog | grep error
 
 # Quick backup with timestamp
 cp file.txt file.txt.$(date +%Y%m%d)
+
+# Find largest files
+du -ah . | sort -rh | head -20
+
+# Kill process by name
+pkill -f process_name
+
+# Watch command output
+watch -n 1 'df -h'
+
+# Create multiple directories
+mkdir -p project/{src,lib,bin,doc}
+
+# Download file with resume
+wget -c http://example.com/file.zip
+
+# Compare two directories
+diff -rq dir1/ dir2/
+
+# Find files changed in last 24 hours
+find . -mtime -1 -type f
+
+# Extract column from file
+awk '{print $2}' file.txt
+
+# Sum numbers in a column
+awk '{sum += $1} END {print sum}' file.txt
+
+# Convert DOS to Unix line endings
+sed -i 's/\r$//' file.txt
+
+# Show only unique lines
+sort file.txt | uniq
+
+# Count word frequency
+tr ' ' '\n' < file.txt | sort | uniq -c | sort -rn
 ```
+
+---
+
+## 🎯 Command Index
+
+### A-E
+
+| Command | Description |
+|---------|-------------|
+| `alias` | Create command alias |
+| `awk` | Pattern processing |
+| `bg` | Background job |
+| `cal` | Calendar |
+| `cat` | Display file contents |
+| `cd` | Change directory |
+| `chmod` | Change permissions |
+| `chown` | Change owner |
+| `cp` | Copy files |
+| `cut` | Extract columns |
+| `date` | Display/set date |
+| `df` | Disk space |
+| `diff` | Compare files |
+| `du` | Directory size |
+| `echo` | Print text |
+
+### F-M
+
+| Command | Description |
+|---------|-------------|
+| `fg` | Foreground job |
+| `find` | Find files |
+| `free` | Memory usage |
+| `grep` | Search patterns |
+| `head` | First lines |
+| `history` | Command history |
+| `hostname` | System hostname |
+| `jobs` | List jobs |
+| `kill` | Terminate process |
+| `less` | Page through file |
+| `ln` | Create links |
+| `locate` | Quick file search |
+| `ls` | List directory |
+| `man` | Manual pages |
+| `mkdir` | Create directory |
+| `mv` | Move/rename |
+
+### N-T
+
+| Command | Description |
+|---------|-------------|
+| `nano` | Text editor |
+| `nice` | Run with priority |
+| `passwd` | Change password |
+| `pidof` | Process ID by name |
+| `ping` | Network test |
+| `ps` | Process status |
+| `pwd` | Print directory |
+| `renice` | Change priority |
+| `rm` | Remove files |
+| `rmdir` | Remove directory |
+| `sed` | Stream editor |
+| `sort` | Sort lines |
+| `ssh` | Secure shell |
+| `stat` | File statistics |
+| `su` | Switch user |
+| `sudo` | Run as root |
+| `tail` | Last lines |
+| `tar` | Archive files |
+| `top` | Process viewer |
+| `touch` | Create file |
+| `tr` | Translate chars |
+| `tree` | Directory tree |
+
+### U-Z
+
+| Command | Description |
+|---------|-------------|
+| `umask` | Default permissions |
+| `uname` | System info |
+| `uniq` | Unique lines |
+| `uptime` | System uptime |
+| `vim` | Text editor |
+| `wc` | Word/line count |
+| `wget` | Download files |
+| `whereis` | Locate binary |
+| `which` | Command location |
+| `who` | Logged users |
+| `whoami` | Current user |
+| `xargs` | Build arguments |
+| `zip` | Compress files |
 
 ---
 

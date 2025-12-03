@@ -398,6 +398,214 @@ echo "test string" | grep -E 'pattern'
 
 ---
 
+## 📱 Phone and Credit Card Patterns
+
+```bash
+# US Phone formats
+grep -E '^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$'           # (555) 123-4567
+grep -E '^[0-9]{3}-[0-9]{3}-[0-9]{4}$'               # 555-123-4567
+grep -E '^\+1[0-9]{10}$'                              # +15551234567
+
+# International format
+grep -E '^\+[0-9]{1,3}[0-9]{4,14}$'
+
+# Credit card (basic validation)
+grep -E '^4[0-9]{15}$'                                # Visa (16 digits)
+grep -E '^5[1-5][0-9]{14}$'                           # MasterCard
+grep -E '^3[47][0-9]{13}$'                            # American Express
+```
+
+---
+
+## 🌐 Network Patterns
+
+```bash
+# IPv4 Address (strict)
+grep -E '^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+
+# IPv4 Address (simple)
+grep -E '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$'
+
+# MAC Address
+grep -E '^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$'
+
+# Domain name
+grep -E '^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$'
+
+# URL with protocol
+grep -E '^https?://[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+(:[0-9]+)?(/.*)?$'
+```
+
+---
+
+## 📅 Date and Time Patterns
+
+```bash
+# Date formats
+grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'               # YYYY-MM-DD
+grep -E '^[0-9]{2}/[0-9]{2}/[0-9]{4}$'               # MM/DD/YYYY
+grep -E '^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$'             # DD.MM.YYYY
+
+# Time formats
+grep -E '^[0-2][0-9]:[0-5][0-9]$'                    # HH:MM
+grep -E '^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$'         # HH:MM:SS
+grep -E '^(0?[1-9]|1[0-2]):[0-5][0-9] [AP]M$'        # 12-hour format
+
+# ISO 8601 datetime
+grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})?$'
+```
+
+---
+
+## 🔤 Text Validation Patterns
+
+```bash
+# Username (alphanumeric, 3-16 chars)
+grep -E '^[a-zA-Z0-9_]{3,16}$'
+
+# Strong password (8+ chars, upper, lower, digit, special)
+grep -E '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$'
+
+# Hex color code
+grep -E '^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$'
+
+# UUID
+grep -E '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+
+# Slug (URL-friendly string)
+grep -E '^[a-z0-9]+(-[a-z0-9]+)*$'
+```
+
+---
+
+## 🗂️ File Path Patterns
+
+```bash
+# Unix absolute path
+grep -E '^/([a-zA-Z0-9._-]+/?)*$'
+
+# Unix relative path
+grep -E '^\.?\.?(/[a-zA-Z0-9._-]+)+/?$'
+
+# File extension
+grep -E '\.[a-zA-Z0-9]+$'
+
+# Specific extensions
+grep -E '\.(txt|md|rst)$'                            # Text files
+grep -E '\.(jpg|jpeg|png|gif|bmp)$'                  # Images
+grep -E '\.(mp3|wav|flac|ogg)$'                      # Audio
+grep -E '\.(mp4|avi|mkv|mov)$'                       # Video
+grep -E '\.(sh|bash|zsh)$'                           # Shell scripts
+```
+
+---
+
+## 🔧 Advanced Sed Patterns
+
+```bash
+# Replace only in specific lines
+sed '5,10s/old/new/g' file.txt                       # Lines 5-10
+sed '/^#/!s/old/new/g' file.txt                      # Non-comment lines
+
+# Multiple replacements
+sed 's/foo/bar/g; s/baz/qux/g' file.txt
+
+# Add line numbers
+sed = file.txt | sed 'N; s/\n/\t/'
+
+# Remove HTML tags
+sed 's/<[^>]*>//g' file.html
+
+# Extract between patterns
+sed -n '/START/,/END/p' file.txt
+
+# Insert line before/after pattern
+sed '/pattern/i\New line before' file.txt
+sed '/pattern/a\New line after' file.txt
+
+# Delete lines between patterns
+sed '/START/,/END/d' file.txt
+
+# Reverse line order
+sed '1!G;h;$!d' file.txt
+
+# Convert to uppercase/lowercase
+sed 's/[a-z]/\U&/g' file.txt                         # Uppercase
+sed 's/[A-Z]/\L&/g' file.txt                         # Lowercase
+```
+
+---
+
+## 🔧 Advanced AWK Patterns
+
+```bash
+# Print specific columns
+awk '{print $1, $3}' file.txt
+
+# Print last column
+awk '{print $NF}' file.txt
+
+# Print line count
+awk 'END {print NR}' file.txt
+
+# Sum column
+awk '{sum += $1} END {print sum}' file.txt
+
+# Average column
+awk '{sum += $1} END {print sum/NR}' file.txt
+
+# Print lines matching pattern
+awk '/pattern/' file.txt
+
+# Print lines where field matches
+awk '$3 == "value"' file.txt
+awk '$3 ~ /pattern/' file.txt
+
+# Field separator
+awk -F':' '{print $1}' /etc/passwd
+
+# Multiple conditions
+awk '$1 > 100 && $2 < 50' file.txt
+
+# Format output
+awk '{printf "%-10s %5d\n", $1, $2}' file.txt
+
+# Process CSV
+awk -F',' '{print $1, $3}' file.csv
+
+# Count occurrences
+awk '{count[$1]++} END {for (i in count) print i, count[i]}' file.txt
+
+# Find max value
+awk 'BEGIN {max=0} $1>max {max=$1} END {print max}' file.txt
+```
+
+---
+
+## 📝 Lookahead and Lookbehind (Perl/Python)
+
+> Note: These work in Perl, Python, and some other tools, but NOT in basic grep/sed.
+
+```bash
+# Lookahead (?=pattern) - match if followed by
+foo(?=bar)                    # "foo" only if followed by "bar"
+
+# Negative lookahead (?!pattern) - match if NOT followed by
+foo(?!bar)                    # "foo" only if NOT followed by "bar"
+
+# Lookbehind (?<=pattern) - match if preceded by
+(?<=foo)bar                   # "bar" only if preceded by "foo"
+
+# Negative lookbehind (?<!pattern) - match if NOT preceded by
+(?<!foo)bar                   # "bar" only if NOT preceded by "foo"
+
+# Using with grep -P (Perl regex)
+grep -P 'foo(?=bar)' file.txt
+grep -P '(?<=foo)bar' file.txt
+```
+
+---
+
 **📖 Related Resources:**
 - [Essential Commands Cheatsheet](essential-commands.md)
 - [Regular Expressions Module](../04-text-processing/regular-expressions.md)

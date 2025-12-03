@@ -346,6 +346,67 @@ other::r--
 
 ---
 
+## 🔍 Finding Permission Issues
+
+### Find Files by Permission
+
+```bash
+# Find world-writable files
+find / -type f -perm -o+w 2>/dev/null
+
+# Find world-writable directories
+find / -type d -perm -o+w 2>/dev/null
+
+# Find SUID files
+find / -type f -perm -4000 2>/dev/null
+
+# Find SGID files
+find / -type f -perm -2000 2>/dev/null
+
+# Find files without owner
+find / -nouser 2>/dev/null
+
+# Find files without group
+find / -nogroup 2>/dev/null
+
+# Find files with specific permissions
+find . -perm 644
+find . -perm /u+x        # User has execute
+find . -perm -g+w        # Group has write
+
+# Find files owned by user
+find / -user john 2>/dev/null
+
+# Find files owned by group
+find / -group developers 2>/dev/null
+```
+
+### Audit Scripts
+
+```bash
+# List all setuid files
+find / -type f \( -perm -4000 -o -perm -2000 \) -exec ls -l {} \; 2>/dev/null
+
+# Find world-writable files in /etc
+find /etc -type f -perm -o+w 2>/dev/null
+
+# Check SSH key permissions
+ls -la ~/.ssh/
+# Should be:
+# ~/.ssh          700
+# ~/.ssh/id_rsa   600
+# ~/.ssh/id_rsa.pub 644
+# ~/.ssh/authorized_keys 600
+
+# Fix SSH permissions
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_rsa
+chmod 644 ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/authorized_keys
+```
+
+---
+
 ## 💡 Common Scenarios
 
 ### Web Server Files
@@ -392,6 +453,113 @@ chmod 755 script.sh
 mkdir /shared
 chmod 2775 /shared
 chown :developers /shared
+```
+
+### Config Files
+
+```bash
+# System config (root readable only)
+chmod 600 /etc/secret.conf
+chown root:root /etc/secret.conf
+
+# Application config (group readable)
+chmod 640 /etc/app/config.yml
+chown root:appgroup /etc/app/config.yml
+```
+
+### Log Files
+
+```bash
+# Writable by service, readable by admins
+chmod 640 /var/log/app.log
+chown appuser:adm /var/log/app.log
+```
+
+---
+
+## 📊 Permission Comparison Table
+
+| Scenario | Permission | Octal | Notes |
+|----------|------------|-------|-------|
+| Private key | `-rw-------` | 600 | SSH requires this |
+| Public key | `-rw-r--r--` | 644 | Can be shared |
+| Script | `-rwxr-xr-x` | 755 | Executable by all |
+| Config file | `-rw-r-----` | 640 | Group can read |
+| Secret file | `-rw-------` | 600 | Owner only |
+| Public file | `-rw-r--r--` | 644 | Everyone can read |
+| Shared dir | `drwxrwxr-x` | 775 | Group writable |
+| Private dir | `drwx------` | 700 | Owner only |
+| Temp dir | `drwxrwxrwt` | 1777 | Sticky bit set |
+| Web files | `-rw-r--r--` | 644 | Web server reads |
+| CGI scripts | `-rwxr-xr-x` | 755 | Web server executes |
+
+---
+
+## 🔧 Bulk Permission Changes
+
+```bash
+# Change all files to 644
+find /path -type f -exec chmod 644 {} \;
+
+# Change all directories to 755
+find /path -type d -exec chmod 755 {} \;
+
+# Combined for web directory
+find /var/www -type f -exec chmod 644 {} \;
+find /var/www -type d -exec chmod 755 {} \;
+
+# Make all .sh files executable
+find . -name "*.sh" -exec chmod +x {} \;
+
+# Fix ownership recursively
+chown -R www-data:www-data /var/www/html/
+
+# Set group ownership and setgid on directories
+find /shared -type d -exec chmod g+s {} \;
+```
+
+---
+
+## 📝 ACL (Access Control Lists)
+
+Advanced permissions beyond basic owner/group/other.
+
+### View ACL
+
+```bash
+getfacl file.txt
+```
+
+### Set ACL
+
+```bash
+# Grant user read access
+setfacl -m u:john:r file.txt
+
+# Grant group write access
+setfacl -m g:developers:rw file.txt
+
+# Remove specific ACL
+setfacl -x u:john file.txt
+
+# Remove all ACL
+setfacl -b file.txt
+
+# Set default ACL (for new files in directory)
+setfacl -d -m g:developers:rw /shared/
+
+# Copy ACL from one file to another
+getfacl file1.txt | setfacl --set-file=- file2.txt
+
+# Recursive ACL
+setfacl -R -m g:developers:rw /project/
+```
+
+### ACL Mask
+
+```bash
+# Set effective permissions mask
+setfacl -m m::r file.txt   # Mask limits to read-only
 ```
 
 ---
